@@ -1,10 +1,15 @@
 #!/usr/bin/env groovy
 
 node {
+    def DOCKER_HOME = tool 'docker'
+	env.PATH="${DOCKER_HOME}:${env.PATH}"
+	
     stage('checkout') {
         checkout scm
     }
-
+   stage('Fetch dependencies') {
+      agent { label 'master' }
+    }
     docker.image('jhipster/jhipster:v6.10.3').inside('-u jhipster -e MAVEN_OPTS="-Duser.home=./"') {
         stage('check java') {
             sh "java -version"
